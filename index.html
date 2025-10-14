@@ -8,7 +8,7 @@
   <!-- Comfortaa -->
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Tailwind (для Live Server) -->
+  <!-- Tailwind (зручно для dev; у проді краще зібрати CSS) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = { theme: { extend: { fontFamily: { sans: ['"Comfortaa"','sans-serif'] } } } }
@@ -31,7 +31,9 @@
         </div>
       </div>
 
+      <!-- ЛИШЕ КАТЕГОРІЇ -->
       <div class="mt-4"><div id="categoryBar" class="flex flex-wrap gap-2"></div></div>
+      <!-- Блок тегів видалено -->
     </div>
   </header>
 
@@ -49,8 +51,7 @@
       <button id="drawerClose" class="shrink-0 rounded-xl border border-slate-700 px-3 py-2 text-violet-400 bg-slate-900 hover:bg-slate-800 transition-colors duration-200" aria-label="Закрити">✖</button>
     </div>
     <div id="drawerContent" class="flex-1 overflow-auto p-5 content-body"></div>
-    <div class="px-5 py-3 border-t border-slate-700 bg-slate-950/60 flex gap-2">
-    </div>
+    <div class="px-5 py-3 border-t border-slate-700 bg-slate-950/60 flex gap-2"></div>
   </aside>
   <div id="overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-opacity"></div>
 
@@ -62,7 +63,7 @@
       </div>
       <div class="p-4">
         <h3 class="title text-slate-100 text-lg font-semibold leading-tight"></h3>
-        <div class="mt-2 flex flex-wrap gap-2 tags"></div>
+        <!-- блок .tags видалено -->
       </div>
     </article>
   </template>
@@ -71,8 +72,6 @@
     <p>© 2025 АН «Харків Ріелтер». Всі права захищені.</p>
   </footer>
 
-  <!-- ВАЖНО: правильный путь и defer -->
   <script src="./app.js" defer></script>
 </body>
 </html>
-

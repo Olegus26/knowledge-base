@@ -1,0 +1,27 @@
+.content-body h2 { font-size: 1.25rem; font-weight: 600; margin: .75rem 0 .25rem; }
+.content-body h3 { font-size: 1.1rem;  font-weight: 600; margin: .6rem  0 .2rem;  }
+.content-body p  { color: #cbd5e1;     margin: .25rem 0 .75rem; }
+.content-body ul, .content-body ol { margin: .25rem 0 .75rem 1.1rem; color: #cbd5e1; }
+.content-body li { margin: .25rem 0; }
+.note { padding: 10px 12px; border: 1px dashed #334155; border-radius: 12px; background: #0e2138; color: #cbd5e1; }
+
+.card.revealed { opacity: 1; transform: translateY(0); }
+
+.chip { border-radius: 999px; padding: 6px 10px; border: 1px solid #334155; background:#0f1a2f; color:#e5e7eb; }
+.chip.active { outline: 2px solid #22c55e; background:#0e2138; }
+.chip:hover { background:#13213c; }
+
+::-webkit-scrollbar{ width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb{ background: rgba(148,163,184,.35); border-radius: 999px; }
+
+body {
+  font-family: "Comfortaa", sans-serif; /* використовує наш шрифт */
+  letter-spacing: 0.3px;                /* трохи розтягує букви — Comfortaa гарніше виглядає */
+  font-weight: 400;                     /* стандартна товщина */
+  color: #e2e8f0;                       /* світло-сірий текст для темного фону */
+}
+
+h1, h2, h3, h4 {
+  font-weight: 600;                     /* заголовки трохи жирніші */
+  letter-spacing: 0.4px;                /* іще трохи ширше між літерами */
+}

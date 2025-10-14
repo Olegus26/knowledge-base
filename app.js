@@ -549,67 +549,39 @@ const drawerContent = document.getElementById('drawerContent');
 const drawerClose = document.getElementById('drawerClose');
 const overlay = document.getElementById('overlay');
 const tpl = document.getElementById('cardTemplate');
-
-const categoryBar = document.getElementById('categoryBar');
-const tagBar = document.getElementById('tagBar');
+const categoryBar = document.getElementById('categoryBar'); // тільки категорії
 
 /* ===== СТАН ФІЛЬТРІВ ===== */
 let selectedCategory = 'Усі';
-const selectedTags = new Set();
 
-/* ===== КАТЕГОРІЇ/ТЕГИ ===== */
-const allCategories = ['Усі', ...Array.from(new Set(KB_ITEMS.map(i=>i.category)))];
-const allTags = Array.from(new Set(KB_ITEMS.flatMap(i=>i.tags))).sort();
+/* ===== КАТЕГОРІЇ ===== */
+const allCategories = ['Усі', ...Array.from(new Set(KB_ITEMS.map(i => i.category)))];
 
-function renderCategoryBar(){
+function renderCategoryBar() {
   categoryBar.innerHTML = '';
-  allCategories.forEach(cat=>{
+  allCategories.forEach(cat => {
     const b = document.createElement('button');
-    b.className = `chip ${selectedCategory===cat?'active':''}`;
+    b.className = `chip ${selectedCategory === cat ? 'active' : ''}`;
     b.textContent = cat;
-    b.onclick = ()=>{ selectedCategory=cat; applyFilters(); renderCategoryBar(); };
+    b.onclick = () => { selectedCategory = cat; applyFilters(); renderCategoryBar(); };
     categoryBar.appendChild(b);
-  });
-}
-function renderTagBar(){
-  tagBar.innerHTML = '';
-  if(allTags.length){
-    const clear = document.createElement('button');
-    clear.className='chip'; clear.textContent='Очистити теги';
-    clear.onclick=()=>{ selectedTags.clear(); renderTagBar(); applyFilters(); };
-    tagBar.appendChild(clear);
-  }
-  allTags.forEach(tag=>{
-    const b = document.createElement('button');
-    b.className = `chip ${selectedTags.has(tag)?'active':''}`;
-    b.textContent = `# ${tag}`;
-    b.onclick = ()=>{ selectedTags.has(tag)?selectedTags.delete(tag):selectedTags.add(tag); renderTagBar(); applyFilters(); };
-    tagBar.appendChild(b);
   });
 }
 
 /* ===== КАРТКИ ===== */
-function renderCards(list){
-  cardsEl.innerHTML='';
-  list.forEach(item=>{
+function renderCards(list) {
+  cardsEl.innerHTML = '';
+  list.forEach(item => {
     const node = tpl.content.cloneNode(true);
     const card = node.querySelector('.card');
     const img  = node.querySelector('img');
     const h3   = node.querySelector('.title');
-    const tagsBox = node.querySelector('.tags');
 
     card.dataset.id = item.id;
-    img.src = item.cover; img.alt=item.title;
+    img.src = item.cover; img.alt = item.title;
     h3.textContent = item.title;
 
-    item.tags.forEach(t=>{
-      const b=document.createElement('button');
-      b.className='chip text-xs'; b.textContent=`# ${t}`;
-      b.onclick=(e)=>{ e.stopPropagation(); selectedTags.add(t); renderTagBar(); applyFilters(); };
-      tagsBox.appendChild(b);
-    });
-
-    card.onclick = ()=>openDrawer(item);
+    card.onclick = () => openDrawer(item);
     cardsEl.appendChild(node);
   });
   observeCards();
@@ -618,54 +590,52 @@ function renderCards(list){
 /* ===== ПОШУК + ФІЛЬТРИ ===== */
 searchInput.addEventListener('input', applyFilters);
 
-function applyFilters(){
+function applyFilters() {
   const q = searchInput.value.trim().toLowerCase();
-  const list = KB_ITEMS.filter(i=>{
-    const byCategory = selectedCategory==='Усі' || i.category===selectedCategory;
-    const byQuery = !q || i.title.toLowerCase().includes(q) || stripHtml(i.body).includes(q) || i.tags.join(' ').toLowerCase().includes(q);
-    const byTags = selectedTags.size===0 || i.tags.some(t=>selectedTags.has(t));
-    return byCategory && byQuery && byTags;
+  const list = KB_ITEMS.filter(i => {
+    const byCategory = selectedCategory === 'Усі' || i.category === selectedCategory;
+    const byQuery =
+      !q ||
+      i.title.toLowerCase().includes(q) ||
+      stripHtml(i.body).includes(q);
+    return byCategory && byQuery;
   });
   renderCards(list);
 }
 
 /* ===== DRAWER ===== */
-function openDrawer(item){
-  drawerTitle.textContent=item.title;
-  drawerMeta.textContent=`${item.category} • ${item.tags.map(t=>'#'+t).join(' ')}`;
-  drawerContent.innerHTML=item.body;
+function openDrawer(item) {
+  drawerTitle.textContent = item.title;
+  drawerMeta.textContent = `${item.category}`; // без тегів
+  drawerContent.innerHTML = item.body;
   drawer.classList.remove('translate-x-full');
   overlay.classList.remove('pointer-events-none'); overlay.classList.add('opacity-100');
-  history.replaceState(null,'',`#${item.id}`);
+  history.replaceState(null, '', `#${item.id}`);
 }
-function closeDrawer(){
+function closeDrawer() {
   drawer.classList.add('translate-x-full');
   overlay.classList.add('pointer-events-none'); overlay.classList.remove('opacity-100');
-  history.replaceState(null,'',location.pathname);
+  history.replaceState(null, '', location.pathname);
 }
-drawerClose.onclick=closeDrawer; overlay.onclick=closeDrawer;
-window.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDrawer(); });
+drawerClose.onclick = closeDrawer; overlay.onclick = closeDrawer;
+window.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
 
 /* ===== HELPERS ===== */
-function stripHtml(html){ const d=document.createElement('div'); d.innerHTML=html; return (d.textContent||'').toLowerCase(); }
+function stripHtml(html) { const d = document.createElement('div'); d.innerHTML = html; return (d.textContent || '').toLowerCase(); }
 
-/* ===== АНИМАЦИЯ ПОЯВЛЕНИЯ ===== */
+/* ===== АНІМАЦІЯ ПОЯВИ ===== */
 let io;
 function observeCards(){
-  if(io) io.disconnect();
-  io = new IntersectionObserver(entries=>{
-    entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('revealed'); io.unobserve(en.target);} });
-  },{threshold:.2});
-  document.querySelectorAll('.card').forEach(el=>io.observe(el));
+  if (io) io.disconnect();
+  io = new IntersectionObserver(entries => {
+    entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('revealed'); io.unobserve(en.target); } });
+  }, { threshold: .2 });
+  document.querySelectorAll('.card').forEach(el => io.observe(el));
 }
 
 /* ===== INIT ===== */
 renderCategoryBar();
-renderTagBar();
-applyFilters();       // ← именно эта строка рендерит карточки
+applyFilters();
 openFromHash();
-function openFromHash(){ const id=location.hash.replace('#',''); if(!id) return; const item=KB_ITEMS.find(i=>i.id===id); if(item) openDrawer(item); }
-
-document.getElementById('copyLinkBtn').onclick=()=>navigator.clipboard.writeText(location.href);
-document.getElementById('editBtn').onclick=()=>alert('Редактор з’явиться пізніше 😊');
+function openFromHash(){ const id = location.hash.replace('#',''); if(!id) return; const item = KB_ITEMS.find(i=>i.id===id); if(item) openDrawer(item); }
 
